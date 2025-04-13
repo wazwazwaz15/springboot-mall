@@ -1,16 +1,18 @@
 package com.bowei.springbootmall.controller;
 
 
-import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+@Slf4j
 @RestController
 public class ProductController {
     @Autowired
@@ -38,6 +40,27 @@ public class ProductController {
         Product product = service.getProcductById(productId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
+
+    }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
+                                                 @RequestBody @Valid ProductRequest productRequest) {
+
+        Product product = service.getProcductById(productId);
+
+        if (product == null) {
+            log.error("productId:" + productId + "不存在");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+
+        service.updateProduct(productId, productRequest);
+
+        Product updatedProduct = service.getProcductById(productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+
 
     }
 
