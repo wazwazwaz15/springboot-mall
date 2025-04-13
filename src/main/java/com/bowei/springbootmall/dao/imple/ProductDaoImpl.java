@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -96,4 +97,19 @@ public class ProductDaoImpl implements ProductDao {
 
         jdbcTemplate.update(sql.toString(), map);
     }
+
+    @Override
+    public void deleteProductId(Integer productId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE FROM mall.product WHERE product_id = :productId");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("productId", productId);
+
+        jdbcTemplate.update(sql.toString(), map);
+
+
+    }
+
+
 }

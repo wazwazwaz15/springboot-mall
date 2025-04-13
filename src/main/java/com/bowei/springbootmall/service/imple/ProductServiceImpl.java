@@ -6,6 +6,7 @@ import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -22,12 +23,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Integer createProduct(ProductRequest productRequest) {
         return dao.createProduct(productRequest);
     }
 
     @Override
+    @Transactional
     public void updateProduct(Integer productId, ProductRequest productRequest) {
          dao.updateProduct(productId, productRequest);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProductById(Integer productId) {
+        dao.deleteProductId(productId);
     }
 }
