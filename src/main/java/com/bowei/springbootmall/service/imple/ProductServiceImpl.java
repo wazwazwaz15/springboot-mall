@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -38,5 +40,11 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProductById(Integer productId) {
         dao.deleteProductId(productId);
+    }
+
+    @Override
+    public List<Product> getProcducts() {
+        List<Product> productList = dao.getProducts();
+        return productList;
     }
 }

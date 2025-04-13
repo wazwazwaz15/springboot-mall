@@ -3,6 +3,8 @@ package com.bowei.springbootmall.service;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 
+import java.util.List;
+
 public interface ProductService {
 
 
@@ -14,4 +16,6 @@ public interface ProductService {
     void updateProduct(Integer productId, ProductRequest productRequest);
 
     void deleteProductById(Integer productId);
+
+    List<Product> getProcducts();
 }
