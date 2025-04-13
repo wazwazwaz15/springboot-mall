@@ -1,7 +1,5 @@
 package com.bowei.springbootmall.constant;
 
-import org.springframework.data.relational.core.sql.In;
-
 public enum ProductCategory {
 
     FOOD(1),

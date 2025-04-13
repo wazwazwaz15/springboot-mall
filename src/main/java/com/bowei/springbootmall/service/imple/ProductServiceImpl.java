@@ -1,6 +1,7 @@
 package com.bowei.springbootmall.service.imple;
 
 import com.bowei.springbootmall.dao.ProductDao;
+import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProcductById(Integer productId) {
         return dao.getProductById(productId);
+    }
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+        return dao.createProduct(productRequest);
     }
 }
