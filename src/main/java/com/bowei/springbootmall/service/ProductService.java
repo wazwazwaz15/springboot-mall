@@ -1,5 +1,6 @@
 package com.bowei.springbootmall.service;
 
+import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 
@@ -17,5 +18,5 @@ public interface ProductService {
 
     void deleteProductById(Integer productId);
 
-    List<Product> getProcducts();
+    List<Product> getProcducts(ProductCategory category,String search);
 }

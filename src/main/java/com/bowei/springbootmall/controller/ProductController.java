@@ -1,6 +1,7 @@
 package com.bowei.springbootmall.controller;
 
 
+import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
@@ -21,9 +22,10 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) ProductCategory category,
+                                                     @RequestParam(required = false) String search) {
 
-        List<Product> productList = service.getProcducts();
+        List<Product> productList = service.getProcducts(category , search);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

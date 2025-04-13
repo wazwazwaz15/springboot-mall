@@ -1,5 +1,6 @@
 package com.bowei.springbootmall.service.imple;
 
+import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dao.ProductDao;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
@@ -43,8 +44,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProcducts() {
-        List<Product> productList = dao.getProducts();
+    public List<Product> getProcducts(ProductCategory category , String search) {
+        List<Product> productList = dao.getProducts(category , search);
         return productList;
     }
 }
