@@ -122,6 +122,7 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String, Object> map = new HashMap<>();
 
+        //查詢條件
         if (productQueryParams.getCategory() != null) {
             sql.append("AND category = :category").append(new_line);
             map.put("category", productQueryParams.getCategory().name());
@@ -131,7 +132,16 @@ public class ProductDaoImpl implements ProductDao {
             map.put("product_name", "%" + productQueryParams.getSearch() + "%");
         }
 
-        sql.append(" ORDER BY ").append(productQueryParams.getOrderBy()).append(" ").append(productQueryParams.getSort());
+        //排序條件
+        sql.append(" ORDER BY ").append(productQueryParams.getOrderBy()).append(" ").append(productQueryParams.getSort()).append(new_line);
+
+        //分頁條件
+        sql.append("LIMIT :limit OFFSET :offset ").append(new_line);
+        map.put("limit", productQueryParams.getLimit());
+        map.put("offset", productQueryParams.getOffset());
+
+
+
 
 
         List<Product> productList = jdbcTemplate.query(sql.toString(), map, new ProductRowMapper());
