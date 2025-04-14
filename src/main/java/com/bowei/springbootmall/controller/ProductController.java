@@ -22,13 +22,18 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @GetMapping("/products")
+    @GetMapping("/products")                           //查詢條件-Filtering
     public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) ProductCategory category,
-                                                     @RequestParam(required = false) String search) {
+                                                     @RequestParam(required = false) String search ,
+                                                     // 排序 sorting
+                                                     @RequestParam(defaultValue = "created_date") String orderBy,
+                                                     @RequestParam(defaultValue = "desc") String sort) {
 
         ProductQueryParams params = new ProductQueryParams();
         params.setCategory(category);
         params.setSearch(search);
+        params.setOrderBy(orderBy);
+        params.setSort(sort);
 
         List<Product> productList = service.getProcducts(params);
 
