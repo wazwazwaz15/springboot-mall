@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,7 +82,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.price", equalTo(100)))
                 .andExpect(jsonPath("$.stock", equalTo(2)))
                 .andExpect(jsonPath("$.description", nullValue()))
-                .andExpect(jsonPath("$.createdDate", notNullValue()))
+                .andExpect(jsonPath("$.createDate", notNullValue()))
                 .andExpect(jsonPath("$.lastModifiedDate", notNullValue()));
     }
 
@@ -130,7 +129,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.price", equalTo(100)))
                 .andExpect(jsonPath("$.stock", equalTo(2)))
                 .andExpect(jsonPath("$.description", nullValue()))
-                .andExpect(jsonPath("$.createdDate", notNullValue()))
+                .andExpect(jsonPath("$.createDate", notNullValue()))
                 .andExpect(jsonPath("$.lastModifiedDate", notNullValue()));
     }
 
@@ -193,6 +192,8 @@ public class ProductControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(204));
     }
+
+
 
     // 查詢商品列表
     @Test
