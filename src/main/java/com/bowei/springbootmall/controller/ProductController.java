@@ -6,6 +6,7 @@ import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
+import com.bowei.springbootmall.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -27,7 +28,7 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping("/products")                           //查詢條件-Filtering
-    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) ProductCategory category,
+    public ResponseEntity<Page<Product>> getProducts(@RequestParam(required = false) ProductCategory category,
                                                      @RequestParam(required = false) String search ,
                                                      // 排序 Sorting
                                                      @RequestParam(defaultValue = "created_date") String orderBy,
@@ -46,7 +47,17 @@ public class ProductController {
 
         List<Product> productList = service.getProcducts(params);
 
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+
+        Integer total = service.countProducts(params);
+
+        Page<Product> productPage = new Page<>();
+        productPage.setTotal(total);
+        productPage.setLimit(limit);
+        productPage.setOffset(offset);
+        productPage.setResults(productList);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(productPage);
     }
 
 

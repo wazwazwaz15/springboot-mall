@@ -1,19 +1,19 @@
 package com.bowei.springbootmall.dao.imple;
 
 
-import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dao.ProductDao;
 import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.model.ProductRowMapper;
+import com.bowei.springbootmall.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProducts(ProductQueryParams productQueryParams) {
+    public    List<Product> getProducts(ProductQueryParams productQueryParams) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT product_id, product_name , category, image_url, price, stock, description, created_date, last_modified_date").append(new_line);
         sql.append("FROM mall.product").append(new_line);
@@ -141,14 +141,33 @@ public class ProductDaoImpl implements ProductDao {
         map.put("offset", productQueryParams.getOffset());
 
 
+        return jdbcTemplate.query(sql.toString(), map, new ProductRowMapper());
 
 
+    }
 
-        List<Product> productList = jdbcTemplate.query(sql.toString(), map, new ProductRowMapper());
+    @Override
+    public Integer countProducts(ProductQueryParams params) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT count(*) ").append(new_line);
+        sql.append("FROM mall.product").append(new_line);
+        sql.append("WHERE 1 = 1").append(new_line);
 
+        Map<String, Object> map = new HashMap<>();
 
-        return productList;
+        //查詢條件
+        if (params.getCategory() != null) {
+            sql.append("AND category = :category").append(new_line);
+            map.put("category", params.getCategory().name());
+        }
+        if (params.getSearch() != null) {
+            sql.append("AND product_name LIKE :product_name").append(new_line);
+            map.put("product_name", "%" + params.getSearch() + "%");
+        }
 
+        Integer total = jdbcTemplate.queryForObject(sql.toString(), map, Integer.class);
+
+        return total;
 
     }
 
