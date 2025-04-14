@@ -1,6 +1,7 @@
 package com.bowei.springbootmall.dao.imple;
 
 
+import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dao.ProductDao;
 import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
@@ -123,14 +124,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         //查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql.append("AND category = :category").append(new_line);
-            map.put("category", productQueryParams.getCategory().name());
-        }
-        if (productQueryParams.getSearch() != null) {
-            sql.append("AND product_name LIKE :product_name").append(new_line);
-            map.put("product_name", "%" + productQueryParams.getSearch() + "%");
-        }
+        addFilteringSql(sql, map, productQueryParams);
 
         //排序條件
         sql.append(" ORDER BY ").append(productQueryParams.getOrderBy()).append(" ").append(productQueryParams.getSort()).append(new_line);
@@ -156,20 +150,35 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         //查詢條件
-        if (params.getCategory() != null) {
-            sql.append("AND category = :category").append(new_line);
-            map.put("category", params.getCategory().name());
-        }
-        if (params.getSearch() != null) {
-            sql.append("AND product_name LIKE :product_name").append(new_line);
-            map.put("product_name", "%" + params.getSearch() + "%");
-        }
+        addFilteringSql(sql, map, params);
 
         Integer total = jdbcTemplate.queryForObject(sql.toString(), map, Integer.class);
 
         return total;
 
     }
+
+
+
+
+
+    private void addFilteringSql(StringBuilder sql , Map<String, Object> map , ProductQueryParams productQueryParams) {
+        if (productQueryParams.getCategory() != null) {
+            sql.append("AND category = :category").append(new_line);
+            map.put("category", productQueryParams.getCategory().name());
+        }
+        if (productQueryParams.getSearch() != null) {
+            sql.append("AND product_name LIKE :product_name").append(new_line);
+            map.put("product_name", "%" + productQueryParams.getSearch() + "%");
+        }
+    }
+
+
+
+
+
+
+
 
 
 }

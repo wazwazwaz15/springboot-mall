@@ -1,5 +1,8 @@
 package com.bowei.springbootmall.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum ProductCategory {
 
     FOOD(1),
@@ -10,10 +13,6 @@ public enum ProductCategory {
 
     ProductCategory(Integer displayId) {
         this.displayId = displayId;
-    }
-
-    public Integer getDisplayId() {
-        return displayId;
     }
 
 }
