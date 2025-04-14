@@ -1,6 +1,7 @@
 package com.bowei.springbootmall.service.imple;
 
 import com.bowei.springbootmall.dao.UserDao;
+import com.bowei.springbootmall.dto.UserLoginRequest;
 import com.bowei.springbootmall.dto.UserRegisterRequest;
 import com.bowei.springbootmall.model.User;
 import com.bowei.springbootmall.service.UserService;
@@ -32,8 +33,8 @@ public class UserServiceImple implements UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         }
-            //創建帳號
-            return userDao.createUser(userRegisterRequest);
+        //創建帳號
+        return userDao.createUser(userRegisterRequest);
 
     }
 
@@ -41,4 +42,22 @@ public class UserServiceImple implements UserService {
     public User getUserById(Integer userId) {
         return userDao.getUserById(userId);
     }
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+
+        if (user == null) {
+            log.warn("該 email {} 尚未註冊", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            return user;
+        } else {
+            log.warn("email {} 的密碼不正確", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }
