@@ -3,6 +3,7 @@ package com.bowei.springbootmall.dao.imple;
 
 import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dao.ProductDao;
+import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.model.ProductRowMapper;
@@ -113,7 +114,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT product_id, product_name , category, image_url, price, stock, description, created_date, last_modified_date").append(new_line);
         sql.append("FROM mall.product").append(new_line);
@@ -121,13 +122,13 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String, Object> map = new HashMap<>();
 
-        if (category != null) {
+        if (productQueryParams.getCategory() != null) {
             sql.append("AND category = :category").append(new_line);
-            map.put("category", category.name());
+            map.put("category", productQueryParams.getCategory().name());
         }
-        if (search != null) {
+        if (productQueryParams.getSearch() != null) {
             sql.append("AND product_name LIKE :product_name");
-            map.put("product_name", "%" + search + "%");
+            map.put("product_name", "%" + productQueryParams.getSearch() + "%");
         }
 
 

@@ -2,6 +2,7 @@ package com.bowei.springbootmall.controller;
 
 
 import com.bowei.springbootmall.constant.ProductCategory;
+import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
@@ -25,7 +26,11 @@ public class ProductController {
     public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) ProductCategory category,
                                                      @RequestParam(required = false) String search) {
 
-        List<Product> productList = service.getProcducts(category , search);
+        ProductQueryParams params = new ProductQueryParams();
+        params.setCategory(category);
+        params.setSearch(search);
+
+        List<Product> productList = service.getProcducts(params);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

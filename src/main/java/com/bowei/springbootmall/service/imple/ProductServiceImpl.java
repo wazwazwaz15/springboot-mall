@@ -2,6 +2,7 @@ package com.bowei.springbootmall.service.imple;
 
 import com.bowei.springbootmall.constant.ProductCategory;
 import com.bowei.springbootmall.dao.ProductDao;
+import com.bowei.springbootmall.dto.ProductQueryParams;
 import com.bowei.springbootmall.dto.ProductRequest;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
@@ -44,8 +45,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProcducts(ProductCategory category , String search) {
-        List<Product> productList = dao.getProducts(category , search);
+    public List<Product> getProcducts(ProductQueryParams productQueryParams) {
+        List<Product> productList = dao.getProducts(productQueryParams);
         return productList;
     }
 }
