@@ -32,7 +32,7 @@ public class ProductDaoImpl implements ProductDao {
     public Product getProductById(Integer productId) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT product_id, product_name , category, image_url, price, stock, description, created_date, last_modified_date").append(new_line);
-        sql.append("FROM mall.product").append(new_line);
+        sql.append("FROM product").append(new_line);
         sql.append("WHERE product_id = :product_id;");
 
         Map<String, Object> map = new HashMap<>();
@@ -52,7 +52,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public Integer createProduct(ProductRequest productRequest) {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO mall.product (product_name , category, image_url, price, stock, description, created_date, last_modified_date)").append(new_line);
+        sql.append("INSERT INTO product (product_name , category, image_url, price, stock, description, created_date, last_modified_date)").append(new_line);
         sql.append("VALUES(:product_name , :category, :image_url, :price, :stock, :description, :created_date, :last_modified_date)");
 
         Map<String, Object> map = new HashMap<>();
@@ -81,7 +81,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void updateProduct(Integer productId, ProductRequest productRequest) {
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE mall.product").append(new_line);
+        sql.append("UPDATE product").append(new_line);
         sql.append("SET product_name = :product_name , category = :category, image_url = :image_url,  price = :price, stock = :stock, description = :description ,last_modified_date = :last_modified_date").append(new_line);
         sql.append("WHERE product_id = :product_id");
 
@@ -118,7 +118,7 @@ public class ProductDaoImpl implements ProductDao {
     public    List<Product> getProducts(ProductQueryParams productQueryParams) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT product_id, product_name , category, image_url, price, stock, description, created_date, last_modified_date").append(new_line);
-        sql.append("FROM mall.product").append(new_line);
+        sql.append("FROM product").append(new_line);
         sql.append("WHERE 1 = 1").append(new_line);
 
         Map<String, Object> map = new HashMap<>();
@@ -144,7 +144,7 @@ public class ProductDaoImpl implements ProductDao {
     public Integer countProducts(ProductQueryParams params) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT count(*) ").append(new_line);
-        sql.append("FROM mall.product").append(new_line);
+        sql.append("FROM product").append(new_line);
         sql.append("WHERE 1 = 1").append(new_line);
 
         Map<String, Object> map = new HashMap<>();
