@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,10 +21,11 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UserServiceImple implements UserService {
+public class UserServiceImple implements UserService,UserDetailsService {
     private final static Logger log = LoggerFactory.getLogger(UserServiceImple.class);
 
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserDao userDao;
@@ -41,7 +45,7 @@ public class UserServiceImple implements UserService {
 
         }
 
-        userRegisterRequest.setPassword(encryptPassWord(userRegisterRequest.getPassword()));
+        userRegisterRequest.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
 
         //創建帳號
         return userDao.createUser(userRegisterRequest);
@@ -49,14 +53,12 @@ public class UserServiceImple implements UserService {
     }
 
 
-    @Override
     public User getUserById(Integer userId) {
         return userDao.getUserById(userId);
     }
 
     @Override
     public User login(UserLoginRequest userLoginRequest) {
-
 
         User user = userDao.getUserByEmail(userLoginRequest.getEmail());
 
@@ -68,14 +70,35 @@ public class UserServiceImple implements UserService {
         }
 
         //比較密碼
-        if (verifyPassword(userLoginRequest.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword())) {
             return user;
         } else {
             log.warn("email {} 的密碼不正確", userLoginRequest.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+
+        }
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        User user = userDao.getUserByEmail(email);
+        if (user == null) {
+            log.warn("使用者不存在 {}",email);
+            throw new UsernameNotFoundException("使用者不存在 "+email);
         }
 
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword()) // 必須是加密過的密碼
+                .roles("USER") // 你可以之後從 DB 拿角色
+                .build();
     }
+
+
+
 
     //使用 MD5 生成密碼的雜湊值 (雜湊過快，容易被破解、已被淘汰)
 //    private String encodedPassWord(String password) {
@@ -84,14 +107,4 @@ public class UserServiceImple implements UserService {
 
 
     //使用 BCryptPasswordEncoder 生成密碼的雜湊值
-
-    private String encryptPassWord(String password) {
-
-        return encoder.encode(password);
-    }
-
-    private boolean verifyPassword(String userPassword, String dbPassword) {
-        return encoder.matches(userPassword, dbPassword);
-    }
-
 }
