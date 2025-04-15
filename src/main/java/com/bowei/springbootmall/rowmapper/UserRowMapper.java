@@ -1,5 +1,6 @@
-package com.bowei.springbootmall.model;
+package com.bowei.springbootmall.rowmapper;
 
+import com.bowei.springbootmall.model.User;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

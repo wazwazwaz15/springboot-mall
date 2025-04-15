@@ -3,7 +3,7 @@ package com.bowei.springbootmall.dao.imple;
 import com.bowei.springbootmall.dao.UserDao;
 import com.bowei.springbootmall.dto.UserRegisterRequest;
 import com.bowei.springbootmall.model.User;
-import com.bowei.springbootmall.model.UserRowMapper;
+import com.bowei.springbootmall.rowmapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
