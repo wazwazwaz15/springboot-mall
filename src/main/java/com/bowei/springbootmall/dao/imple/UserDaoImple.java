@@ -28,7 +28,7 @@ public class UserDaoImple implements UserDao {
     @Override
     public Integer createUser(UserRegisterRequest userRegisterRequest) {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO user(email,password,created_date,last_modified_date)").append(NEW_LINE);
+        sql.append("INSERT INTO users(email,password,created_date,last_modified_date)").append(NEW_LINE);
         sql.append("VALUES(:email , :password , :createdDate , :lastModifiedDate)");
 
         Map<String, Object> map = new HashMap<>();
@@ -52,7 +52,7 @@ public class UserDaoImple implements UserDao {
     public User getUserById(Integer userId) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT user_id  , email, password,created_date,last_modified_date ").append(NEW_LINE);
-        sql.append("FROM user").append(NEW_LINE);
+        sql.append("FROM users").append(NEW_LINE);
         sql.append("WHERE user_id = :userId");
 
         Map<String, Object> map = new HashMap<>();
@@ -73,7 +73,7 @@ public class UserDaoImple implements UserDao {
     public User getUserByEmail(String email) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT user_id  , email, password,created_date,last_modified_date ").append(NEW_LINE);
-        sql.append("FROM user").append(NEW_LINE);
+        sql.append("FROM users").append(NEW_LINE);
         sql.append("WHERE email = :email");
 
         Map<String, Object> map = new HashMap<>();

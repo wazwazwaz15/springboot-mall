@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserServiceImple implements UserService,UserDetailsService {
     private final static Logger log = LoggerFactory.getLogger(UserServiceImple.class);
 
+    //使用 BCryptPasswordEncoder 生成密碼的雜湊值
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -106,5 +107,4 @@ public class UserServiceImple implements UserService,UserDetailsService {
 //    }
 
 
-    //使用 BCryptPasswordEncoder 生成密碼的雜湊值
 }
