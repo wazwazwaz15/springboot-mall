@@ -30,7 +30,7 @@ public class OrderController {
 
         Integer orderId = orderService.createOrder(userId, createOrderRequest);
 
-       Order order = orderService.getOrderById(orderId);
+        Order order = orderService.getOrderById(orderId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
 
@@ -38,17 +38,15 @@ public class OrderController {
     }
 
 
-
     @GetMapping("/users/{userId}/orders")
     public ResponseEntity<Page<Order>> getOrders(@PathVariable(required = false) Integer userId,
-                                                 @RequestParam(defaultValue = "10")@Max(1000)@Min(10) Integer limit,
-                                                 @RequestParam(defaultValue   = "0") @Min(0)Integer offset){
+                                                 @RequestParam(defaultValue = "10") @Max(1000) @Min(10) Integer limit,
+                                                 @RequestParam(defaultValue = "0") @Min(0) Integer offset) {
 
         OrderQueryParams orderQueryParams = new OrderQueryParams();
         orderQueryParams.setUserId(userId);
         orderQueryParams.setLimit(limit);
         orderQueryParams.setOffset(offset);
-
 
 
         //取得OrderList
@@ -59,18 +57,15 @@ public class OrderController {
         Integer count = orderService.countOrder(orderQueryParams);
 
 
-      Page<Order> page = new Page<>();
-     page.setLimit(limit);
-     page.setOffset(offset);
-   page.setTotal(count);
-   page.setResults(orderList);
+        Page<Order> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(count);
+        page.setResults(orderList);
 
-return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
 
     }
-
-
-
 
 
 }

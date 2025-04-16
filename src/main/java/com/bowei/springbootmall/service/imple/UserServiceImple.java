@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UserServiceImple implements UserService,UserDetailsService {
+public class UserServiceImple implements UserService, UserDetailsService {
     private final static Logger log = LoggerFactory.getLogger(UserServiceImple.class);
 
     //使用 BCryptPasswordEncoder 生成密碼的雜湊值
@@ -84,18 +84,16 @@ public class UserServiceImple implements UserService,UserDetailsService {
 
         User user = userDao.getUserByEmail(email);
         if (user == null) {
-            log.warn("使用者不存在 {}",email);
-            throw new UsernameNotFoundException("使用者不存在 "+email);
+            log.warn("使用者不存在 {}", email);
+            throw new UsernameNotFoundException("使用者不存在 " + email);
         }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword()) // 必須是加密過的密碼
-                .roles("USER") // 你可以之後從 DB 拿角色
+                .roles(user.getRole()) // 你可以之後從 DB 拿角色
                 .build();
     }
-
-
 
 
     //使用 MD5 生成密碼的雜湊值 (雜湊過快，容易被破解、已被淘汰)

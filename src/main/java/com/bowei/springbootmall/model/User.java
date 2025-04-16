@@ -3,7 +3,6 @@ package com.bowei.springbootmall.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 
@@ -12,14 +11,16 @@ public class User {
 
 
     private Integer userId;
-    private String email ;
+    private String email;
 
     @JsonIgnore
     private String password;
 
+
+    private String role;
+
     private Timestamp createdDate;
     private Timestamp lastModifiedDate;
-
 
 
 }

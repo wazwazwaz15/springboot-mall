@@ -20,9 +20,9 @@ public class SecurityConfig {
         return http.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/products/**").permitAll()
-                        .requestMatchers("/users/login","/users/login2","/users/register","/users/{userId}/orders").permitAll()
-                        .requestMatchers("/users/me").authenticated()
-                        .requestMatchers("/users/orders").authenticated()
+                        .requestMatchers("/users/login","/users/login2","/users/register").permitAll()
+                        .requestMatchers("/users/me").hasRole("USER")
+                        .requestMatchers("/users/{userId}/orders").authenticated()
                         .anyRequest().permitAll()
                 )
                 .build();

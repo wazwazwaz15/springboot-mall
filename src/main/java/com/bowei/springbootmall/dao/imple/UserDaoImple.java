@@ -51,7 +51,7 @@ public class UserDaoImple implements UserDao {
     @Override
     public User getUserById(Integer userId) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT user_id  , email, password,created_date,last_modified_date ").append(NEW_LINE);
+        sql.append("SELECT user_id  , email, password,role, created_date,last_modified_date ").append(NEW_LINE);
         sql.append("FROM users").append(NEW_LINE);
         sql.append("WHERE user_id = :userId");
 
@@ -72,7 +72,7 @@ public class UserDaoImple implements UserDao {
     @Override
     public User getUserByEmail(String email) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT user_id  , email, password,created_date,last_modified_date ").append(NEW_LINE);
+        sql.append("SELECT user_id  , email, password,role ,created_date,last_modified_date ").append(NEW_LINE);
         sql.append("FROM users").append(NEW_LINE);
         sql.append("WHERE email = :email");
 

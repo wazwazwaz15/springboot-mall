@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users
     user_id            INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
     email              VARCHAR(256) NOT NULL UNIQUE,
     password           VARCHAR(256) NOT NULL,
+    `role`             VARCHAR(10) NOT NULL default 'USER',
     created_date       TIMESTAMP    NOT NULL,
     last_modified_date TIMESTAMP    NOT NULL
 );
