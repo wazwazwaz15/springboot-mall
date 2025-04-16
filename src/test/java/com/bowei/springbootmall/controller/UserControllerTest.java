@@ -194,9 +194,6 @@ public class UserControllerTest {
                 .content(json);
 
 
-        userService.loadUserByUsername("wazwazwaz15@gmail.com");
-
-
         MvcResult loginResult = mockMvc.perform(loginRequest)
                 .andDo(print())
                 .andExpect(status().is(200))
