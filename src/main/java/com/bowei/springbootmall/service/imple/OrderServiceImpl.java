@@ -4,6 +4,7 @@ import com.bowei.springbootmall.dao.ProductDao;
 import com.bowei.springbootmall.dao.UserDao;
 import com.bowei.springbootmall.dto.BuyItem;
 import com.bowei.springbootmall.dto.CreateOrderRequest;
+import com.bowei.springbootmall.dto.OrderQueryParams;
 import com.bowei.springbootmall.model.Order;
 import com.bowei.springbootmall.model.OrderItem;
 import com.bowei.springbootmall.model.Product;
@@ -101,5 +102,24 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(orderItemList);
         return order;
 
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+
+        for(Order order : orderList){
+            order.setOrderItems(orderDao.getOrderItemsByOrderId(order.getOrderId()));
+        }
+
+
+        return orderList;
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+
+
+        return  orderDao.countOrder(orderQueryParams);
     }
 }

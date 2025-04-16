@@ -1,6 +1,7 @@
 package com.bowei.springbootmall.dao.imple;
 
 import com.bowei.springbootmall.dao.OrderDao;
+import com.bowei.springbootmall.dto.OrderQueryParams;
 import com.bowei.springbootmall.model.Order;
 import com.bowei.springbootmall.model.OrderItem;
 import com.bowei.springbootmall.rowmapper.OrderItemRowMapper;
@@ -122,5 +123,57 @@ public class OrderDaoImple implements OrderDao {
 
 
         return orderItemList;
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT order_id , user_id , total_amount , created_date , last_modified_date  FROM  `order` ").append(NEW_LINE);
+        sql.append("WHERE 1 = 1 ").append(NEW_LINE);
+
+        Map<String, Object> map = new HashMap<>();
+        //搜尋條件
+        if(orderQueryParams.getUserId() != null) {
+            sql.append("AND user_id = :userId").append(NEW_LINE);
+            map.put("userId", orderQueryParams.getUserId());
+        }
+
+        //排序條件
+        sql.append("ORDER BY Created_date asc").append(NEW_LINE);
+
+        //分頁條件
+        sql.append("LIMIT :limit").append(NEW_LINE);
+        sql.append("OFFSET :offset ").append(NEW_LINE);
+
+
+
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", orderQueryParams.getOffset());
+
+
+
+
+        return namedParameterJdbcTemplate.query(sql.toString(), new MapSqlParameterSource(map), new OrderRowMapper());
+
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT count(*)  FROM  `order` ").append(NEW_LINE);
+        sql.append("WHERE 1 = 1 ").append(NEW_LINE);
+
+        Map<String,Object> map = new HashMap<>();
+        //搜尋條件
+        if(orderQueryParams.getUserId() != null) {
+            sql.append("AND user_id = :userId").append(NEW_LINE);
+            map.put("userId", orderQueryParams.getUserId());
+        }
+
+        return namedParameterJdbcTemplate.queryForObject(sql.toString(), new MapSqlParameterSource(map),Integer.class);
     }
 }
