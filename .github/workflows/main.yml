@@ -22,7 +22,7 @@ jobs:
         java-version: '17'
 
     - name: 建構專案（Maven）
-      run: ./mvnw clean install
+      run: mvn clean install
 
     - name: 執行測試
-      run: ./mvnw test
+      run: mvn test
