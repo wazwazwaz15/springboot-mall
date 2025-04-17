@@ -2,12 +2,18 @@ package com.bowei.springbootmall.controller;
 
 import com.bowei.springbootmall.dto.BuyItem;
 import com.bowei.springbootmall.dto.CreateOrderRequest;
+import com.bowei.springbootmall.dto.UserLoginRequest;
+import com.bowei.springbootmall.dto.UserRegisterRequest;
+import com.bowei.springbootmall.model.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -30,11 +36,57 @@ public class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @Transactional
     public void createOrder_success() throws Exception {
+
+        UserRegisterRequest UserRegisterRequest = new UserRegisterRequest();
+        UserRegisterRequest.setEmail("wazwazwaz15@gmail.com");
+        UserRegisterRequest.setPassword("testPassword");
+
+        RequestBuilder registerRequest = MockMvcRequestBuilders
+                .post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(UserRegisterRequest));
+
+
+       MvcResult result = mockMvc.perform(registerRequest)
+                .andExpect(status().isCreated())
+                .andReturn();
+
+       User u = mapper.readValue(result.getResponse().getContentAsString(), User.class);
+
+
+        System.out.println("使用者資訊:"+result.getResponse().getContentAsString());
+
+
+
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("wazwazwaz15@gmail.com");
+        userLoginRequest.setPassword("testPassword");
+
+        RequestBuilder loginRequest = MockMvcRequestBuilders
+                .post("/users/login2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userLoginRequest));
+
+        MvcResult loginResult= mockMvc.perform(loginRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+
+
+        assertNotNull(session);
+
+
+
 
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         List<BuyItem> buyItemList = new ArrayList<>();
@@ -45,7 +97,7 @@ public class OrderControllerTest {
 
         BuyItem buyItem2 = new BuyItem();
         buyItem2.setProductId(2);
-        buyItem2.setQuantity(4);
+       buyItem2.setQuantity(4);
 
         buyItemList.add(buyItem);
         buyItemList.add(buyItem2);
@@ -54,14 +106,16 @@ public class OrderControllerTest {
         String json = mapper.writeValueAsString(createOrderRequest);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/users/{userId}/orders", 1)
+                .post("/users/{userId}/orders", u.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+                .content(json)
+                .session(session);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().is(201))
-                .andExpect(jsonPath("$.userId",equalTo(1)))
+                .andExpect(jsonPath("$.userId",equalTo(u.getUserId())))
+                .andExpect(jsonPath("$.orderId",equalTo(3)))
                 .andExpect(jsonPath("$.totalAmount",notNullValue()))
                 .andExpect(jsonPath("$.createdDate",notNullValue()))
                 .andExpect(jsonPath("$.lastModifiedDate",notNullValue()));
@@ -70,6 +124,40 @@ public class OrderControllerTest {
     @Test
     @Transactional
     public void createOrder_userNotExists() throws Exception {
+
+        UserRegisterRequest UserRegisterRequest = new UserRegisterRequest();
+        UserRegisterRequest.setEmail("test@gmail.com");
+        UserRegisterRequest.setPassword("testPassword");
+
+        RequestBuilder registerRequest = MockMvcRequestBuilders
+                .post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(UserRegisterRequest));
+
+
+        mockMvc.perform(registerRequest)
+                .andExpect(status().isCreated());
+
+
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("test@gmail.com");
+        userLoginRequest.setPassword("testPassword");
+
+        RequestBuilder loginRequest = MockMvcRequestBuilders
+                .post("/users/login2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userLoginRequest));
+
+        MvcResult loginResult= mockMvc.perform(loginRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+
+
+        assertNotNull(session);
 
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         List<BuyItem> buyItemList = new ArrayList<>();
@@ -91,7 +179,7 @@ public class OrderControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/users/{userId}/orders", 3)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+                .content(json).session(session);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -104,6 +192,48 @@ public class OrderControllerTest {
     @Test
     @Transactional
     public void createOrder_outOfStock() throws Exception {
+
+        UserRegisterRequest UserRegisterRequest = new UserRegisterRequest();
+        UserRegisterRequest.setEmail("test3@gmail.com");
+        UserRegisterRequest.setPassword("testPassword");
+
+        RequestBuilder registerRequest = MockMvcRequestBuilders
+                .post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(UserRegisterRequest));
+
+
+        MvcResult result = mockMvc.perform(registerRequest)
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        User u = mapper.readValue(result.getResponse().getContentAsString(), User.class);
+
+
+        System.out.println("使用者資訊:"+result.getResponse().getContentAsString());
+
+
+
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("test3@gmail.com");
+        userLoginRequest.setPassword("testPassword");
+
+        RequestBuilder loginRequest = MockMvcRequestBuilders
+                .post("/users/login2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userLoginRequest));
+
+        MvcResult loginResult= mockMvc.perform(loginRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+
+
+        assertNotNull(session);
+
 
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         List<BuyItem> buyItemList = new ArrayList<>();
@@ -123,9 +253,9 @@ public class OrderControllerTest {
         String json = mapper.writeValueAsString(createOrderRequest);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/users/{userId}/orders", 1)
+                .post("/users/{userId}/orders", u.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+                .content(json).session(session);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -137,11 +267,50 @@ public class OrderControllerTest {
 
 
     @Test
+    @Transactional
     public void getOrders() throws Exception {
+
+        UserRegisterRequest UserRegisterRequest = new UserRegisterRequest();
+        UserRegisterRequest.setEmail("wazwazwaz15@gmail.com");
+        UserRegisterRequest.setPassword("testPassword");
+
+        RequestBuilder registerRequest = MockMvcRequestBuilders
+                .post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(UserRegisterRequest));
+
+
+        mockMvc.perform(registerRequest)
+                .andExpect(status().isCreated())
+                .andReturn();
+
+
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("wazwazwaz15@gmail.com");
+        userLoginRequest.setPassword("testPassword");
+
+        RequestBuilder loginRequest = MockMvcRequestBuilders
+                .post("/users/login2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userLoginRequest));
+
+        MvcResult loginResult= mockMvc.perform(loginRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+
+
+        assertNotNull(session);
+
+
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/users/{userId}/orders", 1)
                 .param("limit", "20")
-                .param("offset", "1");
+                .param("offset", "1")
+                .session(session);
 
         mockMvc.perform(request)
                 .andDo(print())
@@ -154,6 +323,13 @@ public class OrderControllerTest {
                 .andReturn();
 
     }
+
+
+
+
+
+
+
 
 
 }
