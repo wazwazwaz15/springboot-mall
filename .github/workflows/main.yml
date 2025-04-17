@@ -1,28 +1,46 @@
-# 檔案路徑：.github/workflows/ci.yml
-name: Spring Boot CI
+name: Spring Boot CI Demo
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 取得專案原始碼
-      uses: actions/checkout@v3
+      # Step 1：拉下原始碼
+      - name: ✅ Checkout 原始碼
+        uses: actions/checkout@v3
 
-    - name: 設定 Java 環境
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      # Step 2：安裝 Java 17
+      - name: ✅ 設定 Java 環境
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: 建構專案（Maven）
-      run: mvn clean install
+      # Step 3：列印目前的 Java 版本
+      - name: ✅ 確認 Java 版本
+        run: java -version
 
-    - name: 執行測試
-      run: mvn test
+      # Step 4：建構 Maven 專案
+      - name: 🔨 Maven 建構
+        run: mvn clean install -DskipTests=true
+
+      # Step 5：執行單元測試
+      - name: 🧪 單元測試
+        run: mvn test
+
+      # Step 6：上傳打包好的 JAR 成為 Artifact
+      - name: 📦 上傳 Jar 檔
+        uses: actions/upload-artifact@v4
+        with:
+          name: springboot-jar
+          path: target/*.jar
+
+      # Step 7：自定義環境變數 + echo
+      - name: 🖨️ 顯示作者名稱
+        run: echo "作者是 ${{ env.AUTHOR_NAME }}"
+        env:
+          AUTHOR_NAME: 伯威 林
