@@ -1,6 +1,6 @@
 package com.bowei.springbootmall.util;
 
-import com.bowei.springbootmall.insterceptor.LogInterceptor;
+import com.bowei.springbootmall.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

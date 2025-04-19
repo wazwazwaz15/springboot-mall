@@ -5,6 +5,7 @@ import com.bowei.springbootmall.dto.UserLoginRequest;
 import com.bowei.springbootmall.dto.UserRegisterRequest;
 import com.bowei.springbootmall.model.User;
 import com.bowei.springbootmall.service.UserService;
+import com.bowei.springbootmall.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -28,6 +31,8 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @PostMapping("/users/register")
@@ -51,26 +56,21 @@ public class UserController {
     //搭配SpringSecurity的Security Filter Chain
 
     @PostMapping("/users/login2")
-    public ResponseEntity<String> login2(@RequestBody @Valid UserLoginRequest userLoginRequest , HttpServletRequest request) {
+    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginRequest userLoginRequest) {
         //設定 AuthenticationManager
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                userLoginRequest.getEmail(), userLoginRequest.getPassword()
-        ));
-
-
-       SecurityContextHolder.getContext().setAuthentication(auth);
-
-        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
-        return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: "+auth.getName());
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userLoginRequest.getEmail(), userLoginRequest.getPassword()
+                ));
+        String token = jwtUtil.generateToken(userLoginRequest.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", token));
 
     }
 
 
-
     @GetMapping("/users/me")
-    public ResponseEntity<String> me(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        return ResponseEntity.status(HttpStatus.OK).body("目前登入者:"+user.getUsername());
+    public ResponseEntity<String> me(@AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.status(HttpStatus.OK).body("目前登入者:" + user.getUsername());
 
     }
 
