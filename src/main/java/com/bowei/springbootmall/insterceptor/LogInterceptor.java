@@ -15,6 +15,8 @@ public class LogInterceptor implements HandlerInterceptor {
 
         request.setAttribute("startTime", startTime);
         System.out.println("[Request] 的請求方法: " + request.getMethod()+" " + "URL :"+request.getRequestURI());
+
+
         return true;
     }
 

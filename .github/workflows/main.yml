@@ -1,17 +1,26 @@
+#pipeline的名稱
 name: Spring Boot CI Demo
-
-on:
+#啟動條件 push pull_request的時候 啟動workflow
+on: #Event: 觸發自動化工作流程的功能。GitHub Action 有豐富的觸情境，在符合的條件下即啟動工作
   push:
     branches: [ "master" ]
   pull_request:
      branches: [ "master" ]
 
-
+#Jobs: Job 是在同一個 Runner 執行的一組 Step。預設情況下這些工作會平行執行，你也能設定循序執行，當其中一個 Job 失敗後，下一個 Job 不會執行
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build-and-test: #job1
+    runs-on: ubuntu-latest #Runner: 代理程式，負責執行自動化程式的伺服器，運作在 Ubuntu Linux、Microsoft Windows 和 macOS 上
 
-    steps:
+    steps: # Step: 在 Job 內可以執行命令獨立工作，Step 可以是一個命令或一個 Action，同一個 Job 內允許所有 Action 共享資料
+      - #Action: 獨立的執行內容，可以自行撰寫，也可以使用 GitHub 社群創作的 Action 來完成工作流程
+        #{owner}/{repo}@{ref}
+        #
+        #範例如下
+        #actions/heroku@main
+
+
+
       # Step 1：拉下原始碼
       - name: ✅ Checkout 原始碼
         uses: actions/checkout@v4
