@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,6 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
 
 
     @PostMapping("/users/register")
@@ -51,26 +51,27 @@ public class UserController {
     //搭配SpringSecurity的Security Filter Chain
 
     @PostMapping("/users/login2")
-    public ResponseEntity<String> login2(@RequestBody @Valid UserLoginRequest userLoginRequest , HttpServletRequest request) {
+    public ResponseEntity<String> login2(@RequestBody @Valid UserLoginRequest userLoginRequest, HttpServletRequest request) {
         //設定 AuthenticationManager
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userLoginRequest.getEmail(), userLoginRequest.getPassword()
         ));
 
+        System.out.println("登入使用者: " + auth.getName());
+        System.out.println("使用者角色: " + auth.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-       SecurityContextHolder.getContext().setAuthentication(auth);
+//        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
-        return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: "+auth.getName());
+        return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: " + auth.getName());
 
     }
 
 
-
     @GetMapping("/users/me")
-    public ResponseEntity<String> me(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
-        return ResponseEntity.status(HttpStatus.OK).body("目前登入者:"+user.getUsername());
+    public ResponseEntity<String> me(@AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.status(HttpStatus.OK).body(" | 目前登入者:" + user.getUsername()
+                + " | 權限:" + user.getAuthorities());
 
     }
 

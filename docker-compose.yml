@@ -19,7 +19,7 @@ services:
       ports:
         - "8080:8080"
       environment:
-        DB_URL: jdbc:mysql://host.docker.internal:3306/mall?serverTimezone=Asia/Taipei&characterEncoding=utf-8
+        DB_URL: jdbc:mysql://host.docker.internal:3307/mall?serverTimezone=Asia/Taipei&characterEncoding=utf-8
         DB_USER: root
         DB_PASS: springboot
       depends_on:

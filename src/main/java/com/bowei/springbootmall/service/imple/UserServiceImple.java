@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UserServiceImple implements UserService, UserDetailsService {
+public class UserServiceImple implements UserService {
     private final static Logger log = LoggerFactory.getLogger(UserServiceImple.class);
 
     //使用 BCryptPasswordEncoder 生成密碼的雜湊值
@@ -76,23 +76,6 @@ public class UserServiceImple implements UserService, UserDetailsService {
 
 
         }
-    }
-
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        User user = userDao.getUserByEmail(email);
-        if (user == null) {
-            log.warn("使用者不存在 {}", email);
-            throw new UsernameNotFoundException("使用者不存在 " + email);
-        }
-
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword()) // 必須是加密過的密碼
-                .roles(user.getRole()) // 你可以之後從 DB 拿角色
-                .build();
     }
 
 
