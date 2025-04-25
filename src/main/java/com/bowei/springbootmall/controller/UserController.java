@@ -61,7 +61,7 @@ public class UserController {
         System.out.println("使用者角色: " + auth.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-//        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
         return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: " + auth.getName());
 
@@ -69,10 +69,14 @@ public class UserController {
 
 
     @GetMapping("/users/me")
-    public ResponseEntity<String> me(@AuthenticationPrincipal UserDetails user) {
-        return ResponseEntity.status(HttpStatus.OK).body(" | 目前登入者:" + user.getUsername()
-                + " | 權限:" + user.getAuthorities());
-
+    public String getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return "未登入或無法識別";
+        }
+        System.out.println("目前登入使用者: " + auth.getName());
+        System.out.println("使用者角色: " + auth.getAuthorities());
+        return "Hello, " + auth.getName();
     }
 
 }
