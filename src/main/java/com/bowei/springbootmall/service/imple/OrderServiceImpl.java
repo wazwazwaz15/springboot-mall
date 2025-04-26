@@ -10,9 +10,12 @@ import com.bowei.springbootmall.model.OrderItem;
 import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.model.User;
 import com.bowei.springbootmall.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
+
     public Integer createOrder(Integer userId, CreateOrderRequest createOrderRequest) {
 
 
@@ -95,11 +99,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-@Transactional
-    public Order getOrderById(Integer orderId) {
+    @Cacheable(value = "orderCache",key = "#orderId" , unless = "#result == null")
+    public Order getOrderById(Integer orderId)  {
         List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
         Order order = orderDao.getOrderById(orderId);
         order.setOrderItems(orderItemList);
+
+
         return order;
 
     }

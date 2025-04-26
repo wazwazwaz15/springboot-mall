@@ -8,6 +8,7 @@ import com.bowei.springbootmall.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -57,6 +58,7 @@ public class UserServiceImple implements UserService {
 
     @Override
     public User login(UserLoginRequest userLoginRequest) {
+
 
         User user = userDao.getUserByEmail(userLoginRequest.getEmail());
 

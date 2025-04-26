@@ -5,6 +5,8 @@ import com.bowei.springbootmall.dto.OrderQueryParams;
 import com.bowei.springbootmall.model.Order;
 import com.bowei.springbootmall.service.OrderService;
 import com.bowei.springbootmall.util.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,6 +33,8 @@ public class OrderController {
         Integer orderId = orderService.createOrder(userId, createOrderRequest);
 
         Order order = orderService.getOrderById(orderId);
+
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
 

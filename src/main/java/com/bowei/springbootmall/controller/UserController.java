@@ -59,8 +59,8 @@ public class UserController {
 
         System.out.println("登入使用者: " + auth.getName());
         System.out.println("使用者角色: " + auth.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
 
+        SecurityContextHolder.getContext().setAuthentication(auth);
         request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
         return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: " + auth.getName());
