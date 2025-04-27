@@ -13,9 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,16 +52,32 @@ public class UserController {
 
     @PostMapping("/users/login2")
     public ResponseEntity<String> login2(@RequestBody @Valid UserLoginRequest userLoginRequest, HttpServletRequest request) {
+
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+
+        token.setDetails(new WebAuthenticationDetails(request));
+
+
         //設定 AuthenticationManager
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                userLoginRequest.getEmail(), userLoginRequest.getPassword()
-        ));
+        Authentication auth = authenticationManager.authenticate(token);
+
 
         System.out.println("登入使用者: " + auth.getName());
         System.out.println("使用者角色: " + auth.getAuthorities());
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        WebAuthenticationDetails details = (WebAuthenticationDetails) auth.getDetails();
+
+
+        System.out.println("使用者的ip: " + details.getRemoteAddress());
+
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(auth);
+        auth = securityContext.getAuthentication();
+        System.out.println("使用者的session: " + details.getSessionId());
+        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 
         return ResponseEntity.status(HttpStatus.OK).body("登入成功! 使用者: " + auth.getName());
 
