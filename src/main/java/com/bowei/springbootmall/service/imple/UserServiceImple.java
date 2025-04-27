@@ -4,6 +4,7 @@ import com.bowei.springbootmall.dao.UserDao;
 import com.bowei.springbootmall.dto.UserLoginRequest;
 import com.bowei.springbootmall.dto.UserRegisterRequest;
 import com.bowei.springbootmall.model.User;
+import com.bowei.springbootmall.redis.RedisUtil;
 import com.bowei.springbootmall.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +29,23 @@ public class UserServiceImple implements UserService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     @Override
     @Transactional
     public Integer register(UserRegisterRequest userRegisterRequest) {
+        User user = null;
 
+        user = (User) redisUtil.getObject("userEmail::" + userRegisterRequest.getEmail());
 
-        // 檢查註冊的 email
-        User user = userDao.getUserByEmail(userRegisterRequest.getEmail());
+        if (user == null) {
+            // 檢查註冊的 email
+            user = userDao.getUserByEmail(userRegisterRequest.getEmail());
+            redisUtil.setObject("userEmail::" + userRegisterRequest.getEmail(), user);
+        }
+
 
         if (user != null) {
             log.warn("該 email {} 已經被註冊", userRegisterRequest.getEmail());

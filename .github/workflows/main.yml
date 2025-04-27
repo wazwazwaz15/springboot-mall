@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest #Runner: 代理程式，負責執行自動化程式的伺服器，運作在 Ubuntu Linux、Microsoft Windows 和 macOS 上
 
     steps: # Step: 在 Job 內可以執行命令獨立工作，Step 可以是一個命令或一個 Action，同一個 Job 內允許所有 Action 共享資料
-      - #Action: 獨立的執行內容，可以自行撰寫，也可以使用 GitHub 社群創作的 Action 來完成工作流程
+        #Action: 獨立的執行內容，可以自行撰寫，也可以使用 GitHub 社群創作的 Action 來完成工作流程
         #{owner}/{repo}@{ref}
         #
         #範例如下

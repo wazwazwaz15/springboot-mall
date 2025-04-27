@@ -3,6 +3,7 @@ package com.bowei.springbootmall.controller;
 import com.bowei.springbootmall.dto.CreateOrderRequest;
 import com.bowei.springbootmall.dto.OrderQueryParams;
 import com.bowei.springbootmall.model.Order;
+import com.bowei.springbootmall.redis.RedisUtil;
 import com.bowei.springbootmall.service.OrderService;
 import com.bowei.springbootmall.util.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +25,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     @PostMapping("/users/{userId}/orders")
@@ -46,9 +49,6 @@ public class OrderController {
     public ResponseEntity<Page<Order>> getOrders(@PathVariable(required = false) Integer userId,
                                                  @RequestParam(defaultValue = "10") @Max(1000) @Min(10) Integer limit,
                                                  @RequestParam(defaultValue = "0") @Min(0) Integer offset) {
-
-
-
 
 
         OrderQueryParams orderQueryParams = new OrderQueryParams();
