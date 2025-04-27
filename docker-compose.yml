@@ -1,30 +1,26 @@
 version: '3.8'
 services:
-  db:
-     image: mysql:8.0
-     container_name: mysql-db
-     environment:
-       MYSQL_ROOT_PASSWORD: springboot
-       MYSQL_DATABASE: mall
 
-     ports:
-       - "3307:3306"
-     volumes:
-       - mysql-data:/var/lib/mysql
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
 
 
   app:
-      build: .
-      container_name: spring-boot-app
-      ports:
-        - "8080:8080"
-      environment:
-        DB_URL: jdbc:mysql://host.docker.internal:3307/mall?serverTimezone=Asia/Taipei&characterEncoding=utf-8
-        DB_USER: root
-        DB_PASS: springboot
-      depends_on:
-        - db
-
+    build: .
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://host.docker.internal:3306/mall?serverTimezone=Asia/Taipei&characterEncoding=utf-8
+      DB_USER: root
+      DB_PASS: springboot
+      REDIS_HOST: redis           # 這是給 Spring Boot 用的
+      REDIS_PORT: 6379           # 這是給 Spring Boot 用的
+    depends_on:
+      - redis
 
 volumes:
-    mysql-data:
+  mysql-data:

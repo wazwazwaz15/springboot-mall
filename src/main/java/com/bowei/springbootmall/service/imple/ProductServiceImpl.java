@@ -8,6 +8,8 @@ import com.bowei.springbootmall.model.Product;
 import com.bowei.springbootmall.service.ProductService;
 import com.bowei.springbootmall.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable(value = "productList",key = "#root.methodName")
     public   List<Product> getProcducts(ProductQueryParams productQueryParams) {
         List<Product> productList = dao.getProducts(productQueryParams);
         return productList;

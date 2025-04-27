@@ -26,7 +26,6 @@ public class RedisUtil {
     }
 
     public Object getObject(String key) {
-
         return redisTemplate.opsForValue().get(key);
     }
 }

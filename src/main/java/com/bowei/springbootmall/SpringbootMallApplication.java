@@ -7,7 +7,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @EnableCaching
-@EnableRedisHttpSession
+//@EnableRedisHttpSession()
 public class SpringbootMallApplication {
 
     public static void main(String[] args) {
